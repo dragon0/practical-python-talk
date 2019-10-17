@@ -1,0 +1,42 @@
+A discussion of tools and techniques for regular Python use,
+such as virtual environments, automated testing and code checking,
+and creating an installer.
+
+Virtual Environments
+    pip
+    venv
+        https://docs.python.org/3/library/venv.html
+        https://packaging.python.org/tutorials/installing-packages/#creating-virtual-environments
+        Python “Virtual Environments” allow Python packages to be installed in an isolated location for a particular application, rather than being installed globally.
+    pipenv
+        https://pipenv.kennethreitz.org/en/latest/
+        It automatically creates and manages a virtualenv for your projects, as well as adds/removes packages from your Pipfile as you install/uninstall packages.
+    conda
+        https://docs.conda.io/en/latest/
+        Conda quickly installs, runs and updates packages and their dependencies. Conda easily creates, saves, loads and switches between environments on your local computer.
+
+Automated Checking
+    doctest
+        https://docs.python.org/3/library/doctest.html
+        The doctest module searches for pieces of text that look like interactive Python sessions, and then executes those sessions to verify that they work exactly as shown.
+    unittest
+        https://docs.python.org/3/library/unittest.html
+        The unittest module provides a rich set of tools for constructing and running tests.
+    coverage
+        https://coverage.readthedocs.io/en/v4.5.x/
+        Coverage.py is a tool for measuring code coverage of Python programs. It monitors your program, noting which parts of the code have been executed, then analyzes the source to identify code that could have been executed but was not.
+    typing
+        https://docs.python.org/3/library/typing.html
+        https://realpython.com/python-type-checking/
+        https://www.bernat.tech/the-state-of-type-hints-in-python/
+            Bernát Gábor recommends that “type hints should be used whenever unit tests are worth writing.”
+        mypy
+            http://mypy-lang.org/
+            Mypy is an optional static type checker for Python that aims to combine the benefits of dynamic (or "duck") typing and static typing. Mypy combines the expressive power and convenience of Python with a powerful type system and compile-time type checking. Mypy type checks standard Python programs; run them using any Python VM with basically no runtime overhead. 
+    pylint
+        https://pylint.readthedocs.io/en/latest/
+        Pylint is a tool that checks for errors in Python code, tries to enforce a coding standard and looks for code smells. It can also look for certain type errors, it can recommend suggestions about how particular blocks can be refactored and can offer you details about the code's complexity.
+
+pyinstaller
+    https://www.pyinstaller.org/
+    PyInstaller freezes (packages) Python applications into stand-alone executables, under Windows, GNU/Linux, Mac OS X, FreeBSD, Solaris and AIX.

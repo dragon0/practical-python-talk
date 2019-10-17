@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Practical Python</title>
+    <meta charset="utf-8">
+    <style>
+      @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+      @import url(https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
+      @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+
+      body { font-family: 'Droid Serif'; }
+      h1, h2, h3 {
+        font-family: 'Yanone Kaffeesatz';
+        font-weight: normal;
+      }
+      .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+    </style>
+  </head>
+  <body>
+    <textarea id="source">
+
+class: center, middle
+
+# Practical Python
+
+Sean Raven
+
+2019-10-17
+
+---
+
+## Topics
+
+1. Packages and Virtual Environments
+  - pip and venv
+  - pipenv
+  - conda
+2. Automated Testing
+  - doctest
+  - unittest
+  - coverage
+3. Automated Code Checking
+  - pylint
+  - typing and mypy
+4. Creating an Installer
+  - pyinstaller
+
+---
+
+class: center, middle
+
+# Working With Third-Party Packages
+
+---
+
+## Installing Third-Party Packages
+
+https://docs.python.org/3/installing/index.html
+
+You can install third-party packages using `pip`.
+The latest version of the package will be downloaded from the Python Package Index.
+
+```bash
+$ pip install numpy matplotlib
+```
+
+Problems:
+
+- Installs system-wide
+  - You might not have access to install globally (eg shared server)
+  - May conflict with system packages
+  - May conflict with other projects
+
+---
+
+## Working With Virtual Environments
+
+https://docs.python.org/3/library/venv.html
+
+Python “Virtual Environments” allow Python packages to be installed in an isolated location for a particular application, rather than being installed globally.
+
+During interpreter startup, the python executable checks where it is located and sets certain internal variables based on the folder path.
+`pip` and the `import` statement use these variables to determine where to install/locate packages.
+
+Advantages:
+
+- Installs to a folder that you can access
+- Conflicting libraries can be installed into different environments
+- You can isolate a project's dependencies from other projects to prevent conflicts in the future (common practice)
+
+---
+
+## Working With Virtual Environments
+
+Creating a new environment:
+
+```bash
+$ python -m venv myenv
+$ source myenv/bin/activate
+$ pip install ...
+$ pip freeze > requirements.txt
+$ python ...
+$ deactivate
+```
+
+If you have an existing `requirements.txt`:
+
+```bash
+$ python -m venv myenv
+$ source myenv/bin/activate
+$ pip install -r requirements.txt
+```
+
+---
+
+## Managing Virtual Environments Automatically With pipenv
+
+https://pipenv.kennethreitz.org/en/latest/
+
+Pipenv automatically creates and manages a virtualenv for your projects, as well as adds/removes packages from your Pipfile as you install/uninstall packages.
+
+It is much more convenient than managing virtual environments manually.
+
+It also maintains separate `Pipfile` and `Pipfile.lock` files.
+These help in creating deterministic builds and in detecting obsolete dependencies.
+
+---
+
+## Managing Virtual Environments Automatically With pipenv
+
+```bash
+$ pip install --user pipenv
+$ pipenv install [packages...]
+$ pipenv lock -r > requirements.txt
+$ pipenv run python myscript.py
+$ pipenv shell
+$ exit
+```
+
+---
+
+## Managing Packages and Environments With conda
+
+https://docs.conda.io/en/latest/
+
+Conda quickly installs, runs and updates packages and their dependencies. Conda easily creates, saves, loads and switches between environments on your local computer.
+
+Unlike Pip and Pipenv, Conda is not specific to Python.
+Although it was created for Python, it can package and distribute software for any language.
+Conda's default configuration installs packages that are maintained by Anaconda,
+with an emphasis on highly optimized builds of software focused on data science.
+
+---
+
+## Managing Packages and Environments With conda
+
+```bash
+$ conda create --name ENVNAME python=3.6 numpy scipy
+$ conda activate ENVNAME
+$ conda install matplotlib
+$ conda deactivate
+```
+
+---
+
+class: center, middle
+
+# Automated Testing
+
+---
+
+## doctest
+
+https://docs.python.org/3/library/doctest.html
+
+The doctest module searches for pieces of text that look like interactive Python sessions, and then executes those sessions to verify that they work exactly as shown.
+
+```python
+def f(x):
+    '''
+    >>> f(5)
+    11
+    >>> f(47)
+    95
+    '''
+
+    return 2 * x + 1
+```
+
+---
+
+class: center, middle
+
+## Demo
+
+---
+
+
+## unittest
+
+https://docs.python.org/3/library/unittest.html
+
+The unittest module provides a rich set of tools for constructing and running tests.
+
+```python
+import unittest
+from my_module import MyClass
+class Tests(unittest.TestCase):
+    def setUp(self):
+        self.myObj = MyClass()
+    def test_foo(self):
+        x = self.myObj.foo(5)
+        self.assertEqual(x, 5)
+    def test_bar(self):
+        x = self.myObj.bar(5)
+        self.assertEqual(x, 5)
+    def tearDown(self):
+        del self.myObj
+
+if __name__ == '__main__':
+    unittest.main()
+```
+
+---
+
+## coverage
+
+https://coverage.readthedocs.io/en/v4.5.x/
+
+Coverage.py is a tool for measuring code coverage of Python programs. It monitors your program, noting which parts of the code have been executed, then analyzes the source to identify code that could have been executed but was not.
+
+```bash
+$ pipenv install --dev coverage
+$ coverage run tests.py
+$ coverage report
+$ coverage html
+```
+
+---
+
+class: center, middle
+
+## Demo
+
+---
+
+class: center, middle
+
+# Automated Code Checking
+
+---
+
+## pylint
+
+https://pylint.readthedocs.io/en/latest/
+
+Pylint is a tool that checks for errors in Python code, tries to enforce a coding standard and looks for code smells. It can also look for certain type errors, it can recommend suggestions about how particular blocks can be refactored and can offer you details about the code's complexity.
+
+```bash
+$ pipenv install --dev pylint
+$ pipenv run pylint my_module.py
+$ pipenv run pylint --help-msg=missing-docstring
+```
+
+---
+
+## typing
+
+https://docs.python.org/3/library/typing.html
+
+This module supports type hints as specified by PEP 484 and PEP 526.
+
+Why?
+
+- Help document your code by clarifying the expectations of functions in a way that can be checked by static analysis tools.
+- Improve IDEs and linters, enabling clearer error messages and more accurate code completion.
+- Help you clarify the intentions of your code and architecture by forcing you to think about types and how they propagate through the system.
+- In the extreme case, types can be used to represent logical concepts in your problem domain, allowing the type checker to verify the logical validity of your code.
+
+> “type hints should be used whenever unit tests are worth writing.”
+>> -- Bernát Gábor, https://www.bernat.tech/the-state-of-type-hints-in-python/
+
+---
+
+## typing
+
+```python
+from typing import NewType, Optional, Sequence
+
+Real = float
+
+def f(x: Real) -> Real: ...
+
+NonNegative = NewType("NonNegative", float)
+
+def g(x: NonNegative) -> Real: ...
+def h(x: Real) -> NonNegative: ...
+
+def non_negative(n: Real) -> Optional(NonNegative):
+    return n if n >= 0 else None
+
+def all_non_negatives(xs: Sequence[Real]) -> Sequence[NonNegative]:
+    result = []
+    for x in xs:
+        nnx = non_negative(x)
+        if nnx is not None:
+            result.append(nnx)
+    return result
+```
+
+---
+
+## mypy
+
+http://mypy-lang.org/
+
+Mypy is an optional static type checker for Python that aims to combine the benefits of dynamic (or "duck") typing and static typing. Mypy combines the expressive power and convenience of Python with a powerful type system and compile-time type checking. Mypy type checks standard Python programs; run them using any Python VM with basically no runtime overhead. 
+
+```bash
+$ pipenv install --dev mypy
+$ pipenv run mypy my_module.py
+```
+
+---
+
+class: center, middle
+
+# Creating an Installer
+
+---
+
+## pyinstaller
+
+https://www.pyinstaller.org/
+PyInstaller freezes (packages) Python applications into stand-alone executables, under Windows, GNU/Linux, Mac OS X, FreeBSD, Solaris and AIX.
+
+```bash
+$ pipenv install --dev pyinstaller
+$ pipenv run pyinstaller mymodule.py
+```
+
+---
+
+## See Also
+
+- https://realpython.com/python-type-checking/
+- https://thoughtbot.com/blog/modeling-with-union-types
+---
+
+class: center, middle
+
+# Questions?
+
+https://dragon0.github.io/practical-python-talk/slides
+
+    </textarea>
+    <script src="https://remarkjs.com/downloads/remark-0.14.1.min.js">
+    </script>
+    <script>
+      var slideshow = remark.create();
+    </script>
+  </body>
+</html>
